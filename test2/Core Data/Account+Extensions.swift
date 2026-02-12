@@ -1,23 +1,13 @@
 //
-//  Account+CoreDataClass.swift
+//  Account+Extensions.swift
 //  test2
 //
-//  Created by 周家弘 on 2026/2/12.
+//  Created by 周家弘 on 2026/2/13.
 //
 
-// Account+CoreDataClass.swift
+// Account+Extensions.swift
 import Foundation
 import CoreData
-
-@objc(Account)
-public class Account: NSManagedObject, Identifiable {
-    @NSManaged public var id: UUID?
-    @NSManaged public var name: String?
-    @NSManaged public var type: String?
-    @NSManaged public var balance: Double
-    @NSManaged public var currency: String?
-    @NSManaged public var icon: String?
-}
 
 extension Account {
     enum AccountType: String, CaseIterable {
@@ -37,4 +27,10 @@ extension Account {
             }
         }
     }
+    
+    var accountType: AccountType {
+        guard let type = type else { return .other }
+        return AccountType(rawValue: type) ?? .other
+    }
 }
+
