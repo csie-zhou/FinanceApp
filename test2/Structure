@@ -1,0 +1,33 @@
+test2/
+├── App/
+│   └── test2App.swift                    // App entry point
+│
+├── Core Data/
+│   ├── test2.xcdatamodeld               // Core Data model
+│   ├── PersistenceController.swift       // Core Data stack
+│   ├── Transaction+Extensions.swift      // Transaction extensions
+│   └── Account+Extensions.swift          // Account extensions
+│
+├── Models/
+│   ├── SharedModels.swift               // ← CategoryTotal, CategoryData
+│   └── CategoryIcon.swift
+│
+├── Views/
+│   ├── MainTabView.swift
+│   ├── Calendar/
+│   │   ├── CalendarView.swift
+│   │   └── DayCell.swift
+│   ├── Transactions/
+│   │   ├── AddTransactionView.swift
+│   │   └── TransactionRowView.swift
+│   ├── Reports/
+│   │   ├── MonthlyReportView.swift
+│   │   └── ChartsView.swift
+│   ├── Accounts/
+│   │   ├── AccountsView.swift
+│   │   └── AddAccountView.swift
+│   └── Settings/
+│       └── SettingsView.swift
+│
+└── Resources/
+    └── Assets.xcassets

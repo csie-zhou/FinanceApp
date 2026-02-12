@@ -1,0 +1,13 @@
+// FinanceApp.xcdatamodeld
+// Create in Xcode: File → New → Data Model
+
+Entity: Transaction
+Attributes:
+- id: UUID
+- amount: Double
+- category: String
+- date: Date
+- notes: String
+- type: String (income/expense)
+- syncStatus: String (pending/synced)
+
