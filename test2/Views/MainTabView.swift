@@ -11,12 +11,6 @@ import SwiftUI
 struct MainTabView: View {
     var body: some View {
         TabView {
-            CalendarView()
-                .tabItem {
-                    Image(systemName: "calendar")
-                    Text("記帳")
-                }
-            
             AccountsView()
                 .tabItem {
                     Image(systemName: "wallet.pass")
@@ -28,6 +22,12 @@ struct MainTabView: View {
                     Image(systemName: "triangle")
                         .renderingMode(.template)
                     Text("")
+                }
+            
+            CalendarView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("記帳")
                 }
             
             MonthlyReportView()

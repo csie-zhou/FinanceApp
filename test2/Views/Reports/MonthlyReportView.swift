@@ -341,24 +341,3 @@ struct MonthlyReportView: View {
         currentMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)!
     }
 }
-
-//struct CategoryTotal {
-//    let category: String
-//    let amount: Double
-//    let percentage: Double
-//}
-
-// Date extensions
-extension Date {
-    func startOfMonth() -> Date {
-        let components = Calendar.current.dateComponents([.year, .month], from: self)
-        return Calendar.current.date(from: components)!
-    }
-    
-    func endOfMonth() -> Date {
-        var components = DateComponents()
-        components.month = 1
-        components.second = -1
-        return Calendar.current.date(byAdding: components, to: startOfMonth())!
-    }
-}

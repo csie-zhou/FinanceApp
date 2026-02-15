@@ -1,33 +1,53 @@
 test2/
 ├── App/
-│   └── test2App.swift                    // App entry point
+│   └── FinanceApp.swift
 │
 ├── Core Data/
-│   ├── test2.xcdatamodeld               // Core Data model
-│   ├── PersistenceController.swift       // Core Data stack
-│   ├── Transaction+Extensions.swift      // Transaction extensions
-│   └── Account+Extensions.swift          // Account extensions
+│   ├── FinanceApp.xcdatamodeld
+│   ├── PersistenceController.swift
+│   ├── Account+Extensions.swift
+│   └── Transaction+Extensions.swift
 │
 ├── Models/
-│   ├── SharedModels.swift               // ← CategoryTotal, CategoryData
+│   ├── SharedModels.swift
 │   └── CategoryIcon.swift
 │
 ├── Views/
 │   ├── MainTabView.swift
+│   │
 │   ├── Calendar/
 │   │   ├── CalendarView.swift
-│   │   └── DayCell.swift
+│   │   └── Components/
+│   │       ├── CalendarHeaderView.swift
+|   |       ├── TransactionRowView.swift
+│   │       └── DayCellView.swift
+│   │
 │   ├── Transactions/
 │   │   ├── AddTransactionView.swift
-│   │   └── TransactionRowView.swift
-│   ├── Reports/
-│   │   ├── MonthlyReportView.swift
-│   │   └── ChartsView.swift
+│   │   └── TransactionDetailView.swift   ← Add if needed
+│   │
 │   ├── Accounts/
 │   │   ├── AccountsView.swift
-│   │   └── AddAccountView.swift
-│   └── Settings/
-│       └── SettingsView.swift
+│   │   ├── AddAccountView.swift
+│   │   └── Components/
+│   │       ├── AccountRowView.swift
+│   │       └── AccountGroupView.swift
+│   │
+│   ├── Reports/
+│   │   └── MonthlyReportView.swift
+│   │
+│   ├── Settings/
+│   │   ├── SettingsView.swift
+│   │   └── Components/
+│   │       ├── CategoryManagementView.swift  ← Add for user customization
+│   │       └── CurrencyManagementView.swift  ← Add for user customization
+│   │
+│   └── Auth/ (or Onboarding/)
+│       └── CaptchaView.swift            ← Move from root, rename
 │
-└── Resources/
-    └── Assets.xcassets
+├── Resources/
+│   └── Assets.xcassets
+│
+└── Tests/
+    ├── test2Tests/
+    └── test2UITests/
