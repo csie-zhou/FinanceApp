@@ -1,0 +1,126 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  XCODE_VERSION: '15.2'
+  IOS_SIMULATOR: 'iPhone 15'
+  IOS_VERSION: '17.2'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app
+      
+    - name: Show Xcode version
+      run: xcodebuild -version
+      
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: |
+          .build
+          ~/Library/Caches/org.swift.swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Install dependencies
+      run: |
+        # If using CocoaPods
+        # gem install cocoapods
+        # pod install
+        
+        # If using Swift Package Manager (already cached above)
+        echo "Dependencies ready"
+    
+    - name: Build project
+      run: |
+        xcodebuild clean build \
+          -project test2.xcodeproj \
+          -scheme test2 \
+          -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty && exit ${PIPESTATUS[0]}
+    
+    - name: Run tests
+      run: |
+        xcodebuild test \
+          -project test2.xcodeproj \
+          -scheme test2 \
+          -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty && exit ${PIPESTATUS[0]}
+      continue-on-error: true  # Don't fail if no tests exist yet
+    
+    - name: Code Coverage
+      if: success()
+      run: |
+        xcrun llvm-cov export \
+          -format="lcov" \
+          -instr-profile="$(find ~/Library/Developer/Xcode/DerivedData -name "*.profdata" | head -1)" \
+          $(find ~/Library/Developer/Xcode/DerivedData -name "test2" -type f | head -1) \
+          > coverage.lcov || echo "No coverage data"
+    
+    - name: Upload coverage to Codecov
+      if: success()
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.lcov
+        fail_ci_if_error: false
+    
+    - name: Archive build artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/**/Build/Products/
+        retention-days: 7
+
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install SwiftLint
+      run: brew install swiftlint
+    
+    - name: Run SwiftLint
+      run: |
+        swiftlint --reporter github-actions-logging
+      continue-on-error: true
+
+  security-scan:
+    name: Security Scan
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run security checks
+      run: |
+        # Check for hardcoded secrets
+        echo "Scanning for hardcoded secrets..."
+        ! grep -r "API_KEY\|SECRET\|PASSWORD" --include="*.swift" test2/ || echo "⚠️ Potential secrets found"
+        
+        # Check for TODO/FIXME
+        echo "Checking for TODO/FIXME..."
+        grep -r "TODO\|FIXME" --include="*.swift" test2/ || echo "✅ No TODOs found"

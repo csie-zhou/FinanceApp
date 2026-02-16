@@ -1,0 +1,71 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-validation:
+    name: PR Validation
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for better diffs
+    
+    - name: Check PR title
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: ]]; then
+          echo "❌ PR title must follow conventional commits format"
+          echo "Examples: feat: Add new feature, fix: Fix bug"
+          exit 1
+        fi
+    
+    - name: Check file changes
+      run: |
+        echo "Files changed in this PR:"
+        git diff --name-only origin/${{ github.base_ref }}...HEAD
+        
+        # Check if any .swift files changed
+        SWIFT_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "\.swift$" || true)
+        if [ -z "$SWIFT_FILES" ]; then
+          echo "⚠️ No Swift files changed"
+        else
+          echo "✅ Swift files modified:"
+          echo "$SWIFT_FILES"
+        fi
+    
+    - name: Check for large files
+      run: |
+        LARGE_FILES=$(find . -type f -size +5M | grep -v ".git" || true)
+        if [ ! -z "$LARGE_FILES" ]; then
+          echo "⚠️ Large files detected:"
+          echo "$LARGE_FILES"
+        fi
+    
+    - name: Build PR
+      run: |
+        xcodebuild clean build \
+          -project test2.xcodeproj \
+          -scheme test2 \
+          -destination "platform=iOS Simulator,name=iPhone 15,OS=17.2" \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO
+    
+    - name: Comment on PR
+      uses: actions/github-script@v7
+      if: always()
+      with:
+        script: |
+          const conclusion = '${{ job.status }}';
+          const emoji = conclusion === 'success' ? '✅' : '❌';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `${emoji} CI Build ${conclusion}\n\nCommit: ${context.sha.substring(0, 7)}`
+          })
