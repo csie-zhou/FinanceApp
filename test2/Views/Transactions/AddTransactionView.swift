@@ -6,11 +6,18 @@ struct AddTransactionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     
+    // ✅ FetchRequest MUST be declared at the top level
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Account.name, ascending: true)],
+        animation: .default
+    )
+    private var accounts: FetchedResults<Account>
+    
     @State private var selectedType: Transaction.TransactionType = .expense
     @State private var amount = ""
     @State private var selectedCategory = "午餐"
     @State private var merchant = ""
-    @State private var selectedAccount = "現金"
+    @State private var selectedAccountName = ""
     @State private var selectedDate: Date
     @State private var notes = ""
     @State private var showingCalculator = false
@@ -53,6 +60,12 @@ struct AddTransactionView: View {
                         saveTransaction()
                     }
                     .disabled(amount.isEmpty)
+                }
+            }
+            .onAppear {
+                // Set default account
+                if selectedAccountName.isEmpty, let firstAccount = accounts.first {
+                    selectedAccountName = firstAccount.name ?? ""
                 }
             }
         }
@@ -151,12 +164,36 @@ struct AddTransactionView: View {
     private var detailsSection: some View {
         VStack(spacing: 12) {
             // Account
+//            HStack {
+//                Text("台新")
+//                    .font(.subheadline)
+//                Spacer()
+//                Text("無專案")
+//                    .foregroundColor(.gray)
+//            }
+//            .padding()
+//            .background(Color(.systemGray6))
+//            .cornerRadius(12)
+            // Account picker
             HStack {
-                Text("台新")
+                Text("帳戶")
                     .font(.subheadline)
                 Spacer()
-                Text("無專案")
-                    .foregroundColor(.gray)
+                
+                Picker("", selection: $selectedAccountName) {
+                    ForEach(accounts) { account in
+                        HStack {
+                            Text(account.name ?? "")
+                            if let currency = account.currency {
+                                Text("(\(currency))")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .tag(account.name ?? "")
+                    }
+                }
+                .pickerStyle(.menu)
             }
             .padding()
             .background(Color(.systemGray6))
@@ -204,7 +241,7 @@ struct AddTransactionView: View {
             date: selectedDate,
             notes: notes,
             type: selectedType,
-            accountName: selectedAccount,
+            accountName: selectedAccountName,
             merchant: merchant,
             context: viewContext
         )

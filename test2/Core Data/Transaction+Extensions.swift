@@ -35,7 +35,7 @@ extension Transaction {
         date: Date = Date(),
         notes: String = "",
         type: TransactionType,
-        accountName: String = "現金",
+        accountName: String,
         merchant: String = "",
         context: NSManagedObjectContext
     ) -> Transaction {
