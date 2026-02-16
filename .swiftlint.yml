@@ -11,8 +11,8 @@ excluded:
   - Pods
   - .build
   - DerivedData
-  - test2Tests
-  - test2UITests
+  - FinanceAppTests
+  - FinanceAppUITests
   
 line_length:
   warning: 150

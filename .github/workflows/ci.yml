@@ -48,8 +48,8 @@ jobs:
     - name: Build project
       run: |
         xcodebuild clean build \
-          -project test2.xcodeproj \
-          -scheme test2 \
+          -project FinanceApp.xcodeproj \
+          -scheme FinanceApp \
           -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
@@ -58,8 +58,8 @@ jobs:
     - name: Run tests
       run: |
         xcodebuild test \
-          -project test2.xcodeproj \
-          -scheme test2 \
+          -project FinanceApp.xcodeproj \
+          -scheme FinanceApp \
           -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
@@ -72,7 +72,7 @@ jobs:
         xcrun llvm-cov export \
           -format="lcov" \
           -instr-profile="$(find ~/Library/Developer/Xcode/DerivedData -name "*.profdata" | head -1)" \
-          $(find ~/Library/Developer/Xcode/DerivedData -name "test2" -type f | head -1) \
+          $(find ~/Library/Developer/Xcode/DerivedData -name "FinanceApp" -type f | head -1) \
           > coverage.lcov || echo "No coverage data"
     
     - name: Upload coverage to Codecov
@@ -119,8 +119,8 @@ jobs:
       run: |
         # Check for hardcoded secrets
         echo "Scanning for hardcoded secrets..."
-        ! grep -r "API_KEY\|SECRET\|PASSWORD" --include="*.swift" test2/ || echo "⚠️ Potential secrets found"
+        ! grep -r "API_KEY\|SECRET\|PASSWORD" --include="*.swift" FinanceApp/ || echo "⚠️ Potential secrets found"
         
         # Check for TODO/FIXME
         echo "Checking for TODO/FIXME..."
-        grep -r "TODO\|FIXME" --include="*.swift" test2/ || echo "✅ No TODOs found"
+        grep -r "TODO\|FIXME" --include="*.swift" FinanceApp/ || echo "✅ No TODOs found"

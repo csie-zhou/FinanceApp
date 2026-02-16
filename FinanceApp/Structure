@@ -1,0 +1,53 @@
+FinanceApp/
+├── App/
+│   └── FinanceApp.swift
+│
+├── Core Data/
+│   ├── FinanceApp.xcdatamodeld
+│   ├── PersistenceController.swift
+│   ├── Account+Extensions.swift
+│   └── Transaction+Extensions.swift
+│
+├── Models/
+│   ├── SharedModels.swift
+│   └── CategoryIcon.swift
+│
+├── Views/
+│   ├── MainTabView.swift
+│   │
+│   ├── Calendar/
+│   │   ├── CalendarView.swift
+│   │   └── Components/
+│   │       ├── CalendarHeaderView.swift
+|   |       ├── TransactionRowView.swift
+│   │       └── DayCellView.swift
+│   │
+│   ├── Transactions/
+│   │   ├── AddTransactionView.swift
+│   │   └── TransactionDetailView.swift   ← Add if needed
+│   │
+│   ├── Accounts/
+│   │   ├── AccountsView.swift
+│   │   ├── AddAccountView.swift
+│   │   └── Components/
+│   │       ├── AccountRowView.swift
+│   │       └── AccountGroupView.swift
+│   │
+│   ├── Reports/
+│   │   └── MonthlyReportView.swift
+│   │
+│   ├── Settings/
+│   │   ├── SettingsView.swift
+│   │   └── Components/
+│   │       ├── CategoryManagementView.swift  ← Add for user customization
+│   │       └── CurrencyManagementView.swift  ← Add for user customization
+│   │
+│   └── Auth/ (or Onboarding/)
+│       └── CaptchaView.swift            ← Move from root, rename
+│
+├── Resources/
+│   └── Assets.xcassets
+│
+└── Tests/
+    ├── FinanceAppTests/
+    └── FinanceAppUITests/

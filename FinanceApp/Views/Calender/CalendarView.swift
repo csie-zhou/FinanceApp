@@ -94,15 +94,15 @@ struct CalendarView: View {
     .padding()
   }
 
-  private var calendarGrid: some View {
-    CalendarGridView(
-      daysInMonth: daysInMonth,
-      selectedDate: selectedDate,
-      hasTransactions: hasTransactions,
-      totalAmount: totalAmount,
-      onDateTap: { date in selectedDate = date }
-    )
-  }
+    private var calendarGrid: some View {
+        CalendarGridView(
+            daysInMonth: daysInMonth,
+            selectedDate: selectedDate,
+            hasTransactions: hasTransactions,
+            totalAmount: totalAmount,
+            onDateTap: { date in selectedDate = date }
+        )
+    }
 
   private var transactionsList: some View {
     List {
@@ -185,3 +185,4 @@ struct CalendarView: View {
     }
   }
 }
+
