@@ -22,4 +22,4 @@ Pods/
 
 # Explicitly include project file:
 !*.xcodeproj/project.pbxproj
-EOF
+EOFactions-runner/
