@@ -23,3 +23,4 @@ Pods/
 # Explicitly include project file:
 !*.xcodeproj/project.pbxproj
 EOFactions-runner/
+actions-runner/
