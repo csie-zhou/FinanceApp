@@ -30,6 +30,15 @@ jobs:
     
     - name: Build project
       run: |
+        set -o pipefail
+    
+        echo "=== Available Simulators ==="
+        xcrun simctl list devices available | grep iPhone
+        
+        echo "=== Available Schemes ==="
+        xcodebuild -list -project FinanceApp.xcodeproj
+        
+        echo "=== Building ==="
         xcodebuild clean build \
           -project FinanceApp.xcodeproj \
           -scheme FinanceApp \
