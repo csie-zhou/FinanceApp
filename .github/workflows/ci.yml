@@ -47,16 +47,32 @@ jobs:
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO
     
-    - name: Run tests
+    - name: Run unit tests
       run: |
         xcodebuild test \
           -project FinanceApp.xcodeproj \
           -scheme FinanceApp \
           -destination 'platform=iOS Simulator,name=iPhone 17' \
+          -only-testing:FinanceAppTests \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO
+      timeout-minutes: 10
       continue-on-error: true
+
+    - name: Run UI tests
+      run: |
+        xcodebuild test \
+          -project FinanceApp.xcodeproj \
+          -scheme FinanceApp \
+          -destination 'platform=iOS Simulator,name=iPhone 17' \
+          -only-testing:FinanceAppUITests \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+      timeout-minutes: 15
+      continue-on-error: true
+
 
   code-quality:
     name: SwiftLint

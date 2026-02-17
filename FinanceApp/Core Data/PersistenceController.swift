@@ -61,8 +61,13 @@ class PersistenceController {
     
     let container: NSPersistentContainer
     
-    init() {
+    init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "FinanceApp")
+        
+        if inMemory {
+            // Use temporary in-memory store for tests
+            container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+        }
         
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
